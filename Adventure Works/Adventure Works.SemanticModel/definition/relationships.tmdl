@@ -1,0 +1,58 @@
+relationship 44f78ec0-c215-4a82-a5ce-cbccc02c558d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Customers.BirthDate
+	toColumn: LocalDateTable_cd63b814-0aa0-409b-9286-179fa06b82f7.Date
+
+relationship 6be4a89c-ab35-4155-bea8-b8320cbca213
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Returns.ReturnDate
+	toColumn: LocalDateTable_8bfd96cd-fb4c-4475-abf3-1e048da677a4.Date
+
+relationship AutoDetected_cb95f30c-2386-4655-a220-dc3ba9e15d78
+	fromColumn: Subcategories.ProductCategoryKey
+	toColumn: Categories.ProductCategoryKey
+
+relationship AutoDetected_8d8f78c9-7afa-4f52-9a46-32e608a533a5
+	fromColumn: Products.ProductSubcategoryKey
+	toColumn: Subcategories.ProductSubcategoryKey
+
+relationship AutoDetected_c8bb16c1-af22-4339-ac8e-46306777f6b8
+	fromColumn: Returns.ProductKey
+	toColumn: Products.ProductKey
+
+relationship 1f5b1177-2f1c-45fb-bfcb-cf474e2eed64
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Sales.StockDate
+	toColumn: LocalDateTable_04a19398-ab7d-4d23-8f0c-a21cd0cf52aa.Date
+
+relationship AutoDetected_e21f24db-d77d-44e2-b22e-b27fa6f1f163
+	fromColumn: Sales.CustomerKey
+	toColumn: Customers.CustomerKey
+
+relationship AutoDetected_13981275-281c-4b04-9578-ab0812dbae00
+	fromColumn: Sales.ProductKey
+	toColumn: Products.ProductKey
+
+relationship b4038da9-395f-7098-5d70-24efe8736dce
+	fromColumn: Sales.OrderDate
+	toColumn: Calendar.Date
+
+relationship 7b88be1c-bd3c-657f-51f6-5c2e4cd5dc60
+	fromColumn: Sales.TerritoryKey
+	toColumn: Territories.SalesTerritoryKey
+
+relationship 6b0274a2-e1b9-4bbf-b08d-da5be5adeec1
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Returns.Week_Start
+	toColumn: LocalDateTable_9ee157f7-f4e3-4d98-92ec-9cab267819fd.Date
+
+relationship f31e5d1f-3b6f-4c64-b74f-ba6a15ee212a
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Sales.Week_Start1
+	toColumn: LocalDateTable_fd2a64f9-ba84-4065-a8aa-a3a94adecbc7.Date
+
+relationship 361d3584-455d-40d5-8dea-c06ce3145972
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Sales.Month_Start
+	toColumn: LocalDateTable_3937e026-3bc3-4160-acd2-85ff91f5dee7.Date
+

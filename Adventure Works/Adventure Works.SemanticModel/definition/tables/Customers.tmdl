@@ -1,0 +1,179 @@
+table Customers
+	lineageTag: 7ea55194-16d3-4870-a4d4-dc2e9d89d7f8
+
+	column CustomerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 8770bbc1-0956-46bc-8a0c-711f5e9b2244
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustName
+		dataType: string
+		lineageTag: d2afadec-7184-40c0-8e20-347951abc4c5
+		summarizeBy: none
+		sourceColumn: CustName
+
+		annotation SummarizationSetBy = Automatic
+
+	column BirthDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: a5bde216-3315-4377-b2ea-ef370727ba69
+		summarizeBy: none
+		sourceColumn: BirthDate
+
+		variation Variation
+			isDefault
+			relationship: 44f78ec0-c215-4a82-a5ce-cbccc02c558d
+			defaultHierarchy: LocalDateTable_cd63b814-0aa0-409b-9286-179fa06b82f7.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column MaritalStatus
+		dataType: string
+		lineageTag: 0fa4396b-dcee-4465-905d-0a0aa49667ee
+		summarizeBy: none
+		sourceColumn: MaritalStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column Gender
+		dataType: string
+		lineageTag: 59ac9db9-5e00-4744-9b8c-50164f72910e
+		summarizeBy: none
+		sourceColumn: Gender
+
+		annotation SummarizationSetBy = Automatic
+
+	column EmailAddress
+		dataType: string
+		lineageTag: 734c10a2-f9e9-4c5a-8dcd-bf9a5f1b3926
+		summarizeBy: none
+		sourceColumn: EmailAddress
+
+		annotation SummarizationSetBy = Automatic
+
+	column AnnualIncome
+		dataType: int64
+		formatString: 0
+		lineageTag: 22be0c2e-2543-4821-9c37-ce1b46637632
+		summarizeBy: sum
+		sourceColumn: AnnualIncome
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalChildren
+		dataType: int64
+		formatString: 0
+		lineageTag: f54bd8cd-6a16-4af0-abac-1f2a376ca8c4
+		summarizeBy: sum
+		sourceColumn: TotalChildren
+
+		annotation SummarizationSetBy = Automatic
+
+	column EducationLevel
+		dataType: string
+		lineageTag: b176e036-6530-4d72-8a2c-4769b7f6e3c8
+		summarizeBy: none
+		sourceColumn: EducationLevel
+
+		annotation SummarizationSetBy = Automatic
+
+	column Occupation
+		dataType: string
+		lineageTag: 367a175f-853f-448a-8ec4-55ccc9b489bd
+		summarizeBy: none
+		sourceColumn: Occupation
+
+		annotation SummarizationSetBy = Automatic
+
+	column HomeOwner
+		dataType: string
+		lineageTag: c83f4f37-0f7a-4d11-988b-249985251d4b
+		summarizeBy: none
+		sourceColumn: HomeOwner
+
+		annotation SummarizationSetBy = Automatic
+
+	column IncomeCategory = IF(Customers[AnnualIncome]>80000,"HIGH",IF(Customers[AnnualIncome]<30000,"LOW","AVERAGE"))
+		lineageTag: 5b09a345-4016-4082-8f68-50aa7ccc6d83
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Age = DATEDIFF(Customers[BirthDate].[Date],NOW(),DAY)/365.25
+		formatString: 0.0
+		lineageTag: fdb01168-c68f-47a7-b494-2a14dcbbc7c4
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"Customers","TableItemName":"Age_Groups","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column Age_Groups =
+			IF(
+				ISBLANK('Customers'[Age]),
+				BLANK(),
+				IF(
+					'Customers'[Age] >= 0,
+					ROUNDDOWN('Customers'[Age] / 10, 0) * 10,
+					ROUNDUP('Customers'[Age] / 10, 0) * 10
+				)
+			)
+		formatString: 0
+		lineageTag: cd31872f-9d76-4df8-89d0-6ca18607ed07
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "Customers"
+				          }
+				        },
+				        "Property": "Age"
+				      }
+				    }
+				  ],
+				  "binningMetadata": {
+				    "binSize": {
+				      "value": 10.0,
+				      "unit": 0
+				    }
+				  }
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"c","Entity":"Customers"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"c"}},"Property":"Age"}}],"BinItem":{"Expression":{"Floor":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"c"}},"Property":"Age"}},"Size":10.0}}}}
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Customers = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\Anas Ali Khan\Data Analysis\DVA\C18\Data Source - 1782200922814\Data Source\AdventureWorks_Customers.csv"),[Delimiter=",", Columns=13, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"CustomerKey", Int64.Type}, {"Prefix", type text}, {"FirstName", type text}, {"LastName", type text}, {"BirthDate", type text}, {"MaritalStatus", type text}, {"Gender", type text}, {"EmailAddress", type text}, {"AnnualIncome", type text}, {"TotalChildren", Int64.Type}, {"EducationLevel", type text}, {"Occupation", type text}, {"HomeOwner", type text}}),
+				    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Changed Type", {{"BirthDate", type date}}, "en-US"),
+				    #"Replaced Value" = Table.ReplaceValue(#"Changed Type with Locale","$","",Replacer.ReplaceText,{"AnnualIncome"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Replaced Value",{{"AnnualIncome", Int64.Type}}),
+				    #"Inserted Merged Column" = Table.AddColumn(#"Changed Type1", "Merged", each Text.Combine({Text.Proper([Prefix]), " ", Text.Proper([FirstName]), " ", Text.Proper([LastName])}), type text),
+				    #"Renamed Columns" = Table.RenameColumns(#"Inserted Merged Column",{{"Merged", "CustName"}}),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Renamed Columns",{"CustomerKey", "CustName", "Prefix", "FirstName", "LastName", "BirthDate", "MaritalStatus", "Gender", "EmailAddress", "AnnualIncome", "TotalChildren", "EducationLevel", "Occupation", "HomeOwner"}),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Reordered Columns",{"CustomerKey", "CustName", "BirthDate", "MaritalStatus", "Gender", "EmailAddress", "AnnualIncome", "TotalChildren", "EducationLevel", "Occupation", "HomeOwner"})
+				in
+				    #"Removed Other Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

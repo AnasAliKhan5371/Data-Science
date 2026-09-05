@@ -1,0 +1,43 @@
+table Subcategories
+	lineageTag: 008506f3-93e3-4c6d-9b03-043e7be67070
+
+	column ProductSubcategoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: bafb7deb-6656-4923-931d-2e0ccc78c31a
+		summarizeBy: none
+		sourceColumn: ProductSubcategoryKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column SubcategoryName
+		dataType: string
+		lineageTag: 62489c31-9060-4eed-9fbe-dc2393ab7d07
+		summarizeBy: none
+		sourceColumn: SubcategoryName
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductCategoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: e0999ecd-2710-4718-ab26-33e37f70e5d7
+		summarizeBy: none
+		sourceColumn: ProductCategoryKey
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Subcategories = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\Anas Ali Khan\Data Analysis\DVA\C18\Data Source - 1782200922814\Data Source\AdventureWorks_Product_Subcategories.csv"),[Delimiter=",", Columns=3, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"ProductSubcategoryKey", Int64.Type}, {"SubcategoryName", type text}, {"ProductCategoryKey", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,30 @@
+expression Sales_2015 =
+		let
+		    Source = Csv.Document(File.Contents("C:\Users\Anas Ali Khan\Data Analysis\DVA\C18\Data Source - 1782200922814\Data Source\AdventureWorks_Sales_2015.csv"),[Delimiter=",", Columns=8, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"OrderDate", type text}, {"StockDate", type text}, {"OrderNumber", type text}, {"ProductKey", Int64.Type}, {"CustomerKey", Int64.Type}, {"TerritoryKey", Int64.Type}, {"OrderLineItem", Int64.Type}, {"OrderQuantity", Int64.Type}}),
+		    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Changed Type", {{"OrderDate", type date}}, "en-US"),
+		    #"Changed Type with Locale1" = Table.TransformColumnTypes(#"Changed Type with Locale", {{"StockDate", type date}}, "en-US")
+		in
+		    #"Changed Type with Locale1"
+	lineageTag: f3ef4926-74e8-474c-b4a0-7bb524520055
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression Sales_2016 =
+		let
+		    Source = Csv.Document(File.Contents("C:\Users\Anas Ali Khan\Data Analysis\DVA\C18\Data Source - 1782200922814\Data Source\AdventureWorks_Sales_2016.csv"),[Delimiter=",", Columns=8, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"OrderDate", type text}, {"StockDate", type text}, {"OrderNumber", type text}, {"ProductKey", Int64.Type}, {"CustomerKey", Int64.Type}, {"TerritoryKey", Int64.Type}, {"OrderLineItem", Int64.Type}, {"OrderQuantity", Int64.Type}}),
+		    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Changed Type", {{"OrderDate", type date}}, "en-US"),
+		    #"Changed Type with Locale1" = Table.TransformColumnTypes(#"Changed Type with Locale", {{"StockDate", type date}}, "en-US")
+		in
+		    #"Changed Type with Locale1"
+	lineageTag: a49fa9c3-ae2e-4937-9b6f-6ae8790acaba
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
