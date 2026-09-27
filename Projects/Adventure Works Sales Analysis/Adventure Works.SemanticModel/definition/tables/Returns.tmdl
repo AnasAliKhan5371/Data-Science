@@ -1,0 +1,92 @@
+table Returns
+	lineageTag: 212ff09d-aadb-40e0-9e9e-8ed8c4a77e2e
+
+	measure ReturnQty = SUM(Returns[ReturnQuantity])
+		formatString: 0.00
+		lineageTag: ac446934-9608-4194-98c1-ec9e0cf7b9b8
+
+	measure ReturnRate = Returns[ReturnQty]/[Sold_Qty]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: e3924404-aa2e-418b-9aa4-a70155311fb6
+
+	measure Total_Returns = COUNT(Returns[ReturnQuantity])
+		formatString: 0.00
+		lineageTag: 4c9af503-ec3f-4af2-8101-82ee36409d42
+
+	column ReturnDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 771891a9-53cb-4802-b19b-989362de0b79
+		summarizeBy: none
+		sourceColumn: ReturnDate
+
+		variation Variation
+			isDefault
+			relationship: 6be4a89c-ab35-4155-bea8-b8320cbca213
+			defaultHierarchy: LocalDateTable_8bfd96cd-fb4c-4475-abf3-1e048da677a4.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column TerritoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 004158de-6838-4fda-a57a-9b489035ce0d
+		summarizeBy: count
+		sourceColumn: TerritoryKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductKey
+		dataType: int64
+		formatString: 0
+		lineageTag: c972cf22-080f-403b-bd63-f77eaa70519e
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ReturnQuantity
+		dataType: int64
+		formatString: 0
+		lineageTag: 9b80493a-4c69-48c2-9b1c-c76b71371ae3
+		summarizeBy: sum
+		sourceColumn: ReturnQuantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column Week_Start = Returns[ReturnDate]-WEEKDAY(Returns[ReturnDate])+1
+		formatString: Short Date
+		lineageTag: 28880604-7f5b-408b-979e-1866fecd52e1
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: 6b0274a2-e1b9-4bbf-b08d-da5be5adeec1
+			defaultHierarchy: LocalDateTable_9ee157f7-f4e3-4d98-92ec-9cab267819fd.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Week_NUM = WEEKNUM(Returns[ReturnDate])
+		formatString: 0
+		lineageTag: 2461ac7b-9d63-4b4e-91f5-4d6c98ec7e6e
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Returns = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\Anas Ali Khan\Data Analysis\DVA\C18\Data Source - 1782200922814\Data Source\AdventureWorks_Returns.csv"),[Delimiter=",", Columns=4, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"ReturnDate", type text}, {"TerritoryKey", Int64.Type}, {"ProductKey", Int64.Type}, {"ReturnQuantity", Int64.Type}}),
+				    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Changed Type", {{"ReturnDate", type date}}, "en-US")
+				in
+				    #"Changed Type with Locale"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,104 @@
+table Calendar
+	lineageTag: ed33df4b-6782-467f-b972-1322ab42d2f7
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: Long Date
+		lineageTag: 5a9a6754-f0a6-479e-8840-9fec0b4b470e
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Month_Start = DATE(YEAR('Calendar'[Date]),MONTH('Calendar'[Date]),1)
+		formatString: Short Date
+		lineageTag: acc1d6e6-a2f3-4fc5-b848-7161e930249d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Years = YEAR('Calendar'[Date])
+		isHidden
+		formatString: 0
+		lineageTag: 688d2694-a7c9-4302-b362-ab8cc9f782e3
+		summarizeBy: sum
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month_No = MONTH('Calendar'[Date])
+		isHidden
+		formatString: 0
+		lineageTag: 0770fb48-9c0b-4fab-be6b-640b9e6056f6
+		summarizeBy: sum
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarters = QUARTER('Calendar'[Date])
+		isHidden
+		formatString: 0
+		lineageTag: e7650baf-09a4-436e-a0b5-05a1b13046a4
+		summarizeBy: sum
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Week_No = WEEKNUM('Calendar'[Date])
+		isHidden
+		formatString: 0
+		lineageTag: 482cfadf-507e-4ceb-ad98-804b5474381c
+		summarizeBy: sum
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month_Year = FORMAT('Calendar'[Date],"MMM YYYY")
+		lineageTag: 2b238639-bb43-4f6a-af9d-bce4cbf19f59
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Dates Hierarchy'
+		lineageTag: 82cdad44-81b2-418c-993e-f2db4dca0eb7
+
+		level Years
+			lineageTag: db8bc2d6-1dca-4ac2-9dde-b892d1cb2e6e
+			column: Years
+
+		level Quarters
+			lineageTag: 1ea4e75e-2936-453a-893b-c96ac709e0cc
+			column: Quarters
+
+		level Month_No
+			lineageTag: e5e575d5-594a-4d9b-8240-af6d529bb508
+			column: Month_No
+
+		level Week_No
+			lineageTag: d5f08be8-7f0d-431b-8307-d8494fb81b80
+			column: Week_No
+
+	partition Calendar = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\Anas Ali Khan\Data Analysis\DVA\C18\Data Source - 1782200922814\Data Source\AdventureWorks_Calendar.csv"),[Delimiter=",", Columns=1, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Changed Type", [PromoteAllScalars=true]),
+				    #"USED FIRST ROW AS HEADER" = Table.TransformColumnTypes(#"Promoted Headers",{{"Date", type text}}),
+				    #"Changed Type with Locale" = Table.TransformColumnTypes(#"USED FIRST ROW AS HEADER", {{"Date", type date}}, "en-US")
+				in
+				    #"Changed Type with Locale"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
