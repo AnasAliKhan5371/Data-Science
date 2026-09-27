@@ -1,0 +1,211 @@
+table supply_chain_dashboard_data
+	lineageTag: 5e4e7c3f-b3f6-44d7-b25b-3eb9d308a14b
+
+	measure 'Total Orders' = COUNTROWS('supply_chain_dashboard_data')
+		lineageTag: feb97719-8fa1-4e97-8fac-64d019a43fc3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Late Deliveries' = CALCULATE([Total Orders], 'supply_chain_dashboard_data'[Is_Delayed] = TRUE())
+		formatString: 0
+		lineageTag: 7140f8e3-cf1c-4372-be2d-5f4c764a6f28
+
+	measure 'Late Delivery Rate' = DIVIDE([Late Deliveries], [Total Orders])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: de146faa-6613-4235-b1d7-5dc6837ecfbc
+
+	measure 'On-Time Rate' = 1 - [Late Delivery Rate]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 8553c126-bd29-4e60-97e0-e9580951ff67
+
+	measure 'Net Profit' = SUM('supply_chain_dashboard_data'[Order Profit Per Order])
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 11c9db11-1925-48b0-b96a-aa823ac3ccec
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Profit at Risk' = CALCULATE([Net Profit], 'supply_chain_dashboard_data'[Is_Delayed] = TRUE())
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 72007c04-4b97-4b51-bd4e-91e0a799187c
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Avg Order Profit' = AVERAGE('supply_chain_dashboard_data'[Order Profit Per Order])
+		lineageTag: 69a148b5-a511-4ee6-867b-d14fa332186f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Gross Profit' =
+			
+			CALCULATE(
+			    SUM('supply_chain_dashboard_data'[Order Profit Per Order]),
+			    'supply_chain_dashboard_data'[Order Profit Per Order] > 0
+			)
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 97a44200-8a6d-4393-bbb2-52a9b5520aff
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column 'order date (DateOrders)'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 71f5b2a2-8d60-439f-a202-8f249a5bb643
+		summarizeBy: none
+		sourceColumn: order date (DateOrders)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'shipping date (DateOrders)'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c37ab89d-eacd-43c4-bd88-83d07b4a78f1
+		summarizeBy: none
+		sourceColumn: shipping date (DateOrders)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Order Region'
+		dataType: string
+		lineageTag: 4e8fa09a-5293-40d5-82f9-59709125cd41
+		summarizeBy: none
+		sourceColumn: Order Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Customer Segment'
+		dataType: string
+		lineageTag: e7df408b-9a17-4822-88f0-edcb35d758a1
+		summarizeBy: none
+		sourceColumn: Customer Segment
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Shipping Mode'
+		dataType: string
+		lineageTag: ce0799ff-2d3a-42fa-b8e0-606c0f7776af
+		summarizeBy: none
+		sourceColumn: Shipping Mode
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Order Status'
+		dataType: string
+		lineageTag: 53c49171-613f-4d76-96ff-91c875c69194
+		summarizeBy: none
+		sourceColumn: Order Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Department Name'
+		dataType: string
+		lineageTag: 52f3d3fc-ffd0-4d99-82fb-40fca2956d98
+		summarizeBy: none
+		sourceColumn: Department Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Category Name'
+		dataType: string
+		lineageTag: 9f93d386-2c0b-4406-934a-8def23f22b07
+		summarizeBy: none
+		sourceColumn: Category Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Order Profit Per Order'
+		dataType: double
+		lineageTag: 2d15aa48-e1d0-4efc-873e-7ec445b58200
+		summarizeBy: sum
+		sourceColumn: Order Profit Per Order
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Order Processing Time'
+		dataType: int64
+		formatString: 0
+		lineageTag: 471a2424-9324-48fa-adc8-bbd0b13be2c4
+		summarizeBy: sum
+		sourceColumn: Order Processing Time
+
+		annotation SummarizationSetBy = Automatic
+
+	column Is_Delayed
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 3dcc29cb-fed1-4276-9a93-757f2905f78d
+		summarizeBy: none
+		sourceColumn: Is_Delayed
+
+		annotation SummarizationSetBy = Automatic
+
+	column Delay
+		dataType: int64
+		formatString: 0
+		lineageTag: 523ae085-a813-4881-8127-9c8c72d90c24
+		summarizeBy: sum
+		sourceColumn: Delay
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Profitability Flag'
+		dataType: string
+		lineageTag: 00a29691-7427-4c97-85ae-1449546098f5
+		summarizeBy: none
+		sourceColumn: Profitability Flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_month
+		dataType: int64
+		formatString: 0
+		lineageTag: 6e5521fb-cc2e-4559-b704-aad595de9d28
+		summarizeBy: sum
+		sourceColumn: order_month
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_day
+		dataType: string
+		lineageTag: 5df1d02f-3973-40b3-a0f3-2ea5641f4187
+		summarizeBy: none
+		sourceColumn: order_day
+		sortByColumn: day_sort
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_hour
+		dataType: int64
+		formatString: 0
+		lineageTag: 453097be-0e3b-43de-ae71-1553c96e4cf3
+		summarizeBy: sum
+		sourceColumn: order_hour
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_sort = WEEKDAY('supply_chain_dashboard_data'[order date (DateOrders)], 2) - 1
+		formatString: 0
+		lineageTag: e7c2b7f6-8860-480d-8e98-db7111a5dc0e
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition supply_chain_dashboard_data = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\Anas Ali Khan\Data Analysis\New folder\Supply Chain\supply_chain_dashboard_data.csv"),[Delimiter=",", Columns=16, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"order date (DateOrders)", type datetime}, {"shipping date (DateOrders)", type datetime}, {"Order Region", type text}, {"Customer Segment", type text}, {"Shipping Mode", type text}, {"Order Status", type text}, {"Department Name", type text}, {"Category Name", type text}, {"Order Profit Per Order", type number}, {"Order Processing Time", Int64.Type}, {"Is_Delayed", type logical}, {"Delay", Int64.Type}, {"Profitability Flag", type text}, {"order_month", Int64.Type}, {"order_day", type text}, {"order_hour", Int64.Type}}),
+				    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Changed Type", {{"order date (DateOrders)", type datetime}}, "en-US"),
+				    #"Changed Type with Locale1" = Table.TransformColumnTypes(#"Changed Type with Locale", {{"shipping date (DateOrders)", type datetime}}, "en-US")
+				in
+				    #"Changed Type with Locale1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
